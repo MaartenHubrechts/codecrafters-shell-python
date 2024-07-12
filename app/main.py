@@ -8,8 +8,11 @@ def main():
 
         # Wait for user input
         cmd = input()
-        if cmd == "exit 0":
+        tokens = cmd.split()
+        if tokens[0] == "exit":
             break
+        elif tokens[0] == "echo":
+            sys.stdout.write(" ".join(tokens[1:]) + "\n")
         else:
             sys.stdout.write(f"{cmd}: command not found\n")
             sys.stdout.flush()
