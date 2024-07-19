@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 import sys
 from enum import Enum
 
@@ -14,7 +15,7 @@ def find_in_path(cmd: str):
     paths = os.environ.get("PATH", "").split(":")
     for path in paths:
         if os.path.isdir(path) and cmd in os.listdir(path):
-            return path
+            return path + "/" + cmd
     return None
 
 
@@ -37,11 +38,15 @@ def main():
                     sys.stdout.write(f"{tokens[1]} is a shell builtin\n")
                     sys.stdout.flush()
                 elif find_in_path(tokens[1]):
-                    sys.stdout.write(f"{tokens[1]} is {find_in_path(tokens[1])+"/"+tokens[1]}\n")
+                    sys.stdout.write(f"{tokens[1]} is {find_in_path(tokens[1])}\n")
                     sys.stdout.flush()
                 else:
                     sys.stdout.write(f"{tokens[1]}: not found\n")
                     sys.stdout.flush()
+            elif find_in_path(tokens[0]):
+                # TODO exec program with other arguments
+                program_path = find_in_path(tokens[0])
+                subprocess.call([program_path, *tokens[1:]])
             else:
                 sys.stdout.write(f"{cmd}: command not found\n")
                 sys.stdout.flush()
